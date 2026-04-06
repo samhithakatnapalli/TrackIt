@@ -19,12 +19,6 @@ Thumbs.db
 # Environment variables
 .env
 
-# JSON data (app data)
-tbr_books.json
-to_watch.json
-watched.json
-read_books.json
-
 # Flask stuff
 instance/
 .webassets-cache

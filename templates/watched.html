@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Home</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Lilita+One&family=Luckiest+Guy&family=Margarine&family=Outfit:wght@100..900&family=Special+Elite&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="../static/styles.css">
+    </head>
+    <body>
+        <a href="{{ url_for('home_page') }}" id="back-button">↩</a>
+        <div class="home-search">
+            <div class="heading">
+                <p>All your <b> Watched Series/Movies</b> are here</p>
+            </div>
+
+            <form method="POST" action="/handle-action/watched" class="search-form">
+                <input type="text" name="title" placeholder="Enter series/movie name...">
+                <input type="text" name="author" placeholder="Enter director name...">
+                
+                <div class="action-buttons">
+                    <button name="action" value="add">+ Add</button>
+                    <button name="action" value="search">⌕ Search</button>
+                </div>
+            </form>
+
+            <a href="/list_page/watched" id="see-list-button">☰ See List</a>
+        </div>
+    </body>
+</html>

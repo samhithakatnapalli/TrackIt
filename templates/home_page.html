@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Home</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Lilita+One&family=Luckiest+Guy&family=Margarine&family=Outfit:wght@100..900&family=Special+Elite&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="../static/styles.css">
+    </head>
+    <body>
+        <div class="heading">
+            <p><b>Wel</b>come~<br>Your one stop to <b>track all your hobbies!</b></p>
+        </div>
+        <div class="buttons">
+            <a href="{{ url_for('tbr') }}" id="to-read">🕮 To Read</a>
+            <a href="{{ url_for('to_watch') }}" id="to-watch">🎞 To Watch</a>
+            <a href="{{ url_for('read') }}" id="read">☑ Read</a>
+            <a href="{{ url_for('watched') }}" id="watched">📽 Watched</a> 
+        </div>
+    </body>
+</html>

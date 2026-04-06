@@ -1,0 +1,201 @@
+html{
+    height: 100%;
+    background: #F2D492;
+    padding: 1rem 1rem;
+}
+
+.start-button{
+    display: flex;
+    flex-direction: column; 
+    justify-content: center;
+    align-items: center;
+    margin-top: 14rem;
+}
+#start-button{
+    background-color: #283845;
+    border-radius: 3rem;
+    padding: 1.5rem 4rem;
+
+    font-family: "Lilita One", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+
+    text-decoration: none;
+    color: #F2D492;
+    font-size: 2rem;
+}
+#start-button:hover, button:hover,.footer:hover,#to-read:hover,#to-watch:hover,#read:hover,#watched:hover,#delete_button:hover{
+    transform: translateY(-3px);
+    box-shadow: 0px 8px 40px #9c7355;
+    transition: all 0.3s;
+}
+
+p{
+    font-family: "DM Serif Display", serif;
+    font-style: normal;
+    font-weight: 800;
+    color: #283845;
+    font-size: 2rem;
+}
+b{
+    color: #7a3608;
+}
+
+.heading{
+    padding: 1rem 2rem;
+    justify-content: center;
+}
+.buttons{
+    display: grid;
+    grid-template-columns: repeat(2,0.1fr);
+    justify-content: center;
+    gap: 1rem;
+}
+#to-read,#to-watch,#read,#watched{
+    font-family: "Margarine", sans-serif;
+    font-weight: 600;
+    font-style: normal;
+    font-size: 1.5rem;
+
+    border-radius: 10rem;
+    width: 10rem;
+    height: 5rem;
+
+    text-decoration: none;
+    text-align: center;
+    align-content: center;
+    padding: 1rem 2rem;
+    color: #3e2f0e;
+}
+#to-read{
+    border: rgb(59, 52, 14) 0.01rem solid;
+    background-color: #d09d79;
+}
+#to-watch{
+    border: #508aa1 0.01rem solid;
+    background-color: #87CEEB;
+}
+#read{
+    border: #b0727b 0.01rem solid;
+    background-color: #FFB6C1;
+}
+#watched{
+    border: #968c54 0.01rem solid;
+    background-color: #FFD700;
+}
+
+#back-button{
+    text-decoration: none;
+    color: #283845;
+    font-size: 2rem;
+    font-weight: bolder;
+}
+.home-search{
+    display: flex;
+    flex-direction: column; 
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+}
+.search-form{
+    display: flex;
+    flex-direction: column; 
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+}
+input[type='text']{
+    text-align: center;
+    border: 0.001rem solid #283845;
+    border-radius: 2rem;
+    height: 4rem;
+    width: 30rem;
+
+    font-family: "Special Elite", system-ui;
+    font-weight: 500;
+    font-style: normal;
+    font-size: larger;
+}
+button{
+    background-color: #283845;
+    border: 0.001rem solid #283845;
+    border-radius: 10rem;
+    width: 10rem;
+    height: 4rem;
+    cursor: pointer;
+
+    font-family: "Special Elite", system-ui;
+    font-weight: 600;
+    font-style: normal;
+    font-size: larger;
+    color: #F2D492;
+
+    align-content: center;
+    text-align: center;
+}
+#see-list-button{
+    background-color: #283845;
+    border-radius: 10rem;
+    text-decoration: none;
+
+    font-family: "Special Elite", system-ui;
+    font-weight: 600;
+    font-style: normal;
+    font-size: larger;
+    color: #F2D492;
+
+    padding: 1.3rem 2rem;
+    display: flex;
+    justify-content: center;
+}
+
+.search-results{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+}
+#delete_button,#edit_button{
+    font-family: "Special Elite", system-ui;
+    font-weight: 600;
+    font-style: normal;
+    font-size: larger;
+    padding: 0.5rem 1rem;
+    
+    background-color: transparent;
+    border: none;
+    color: #7a3608;
+    font-size: 1.6rem;
+    text-decoration: none;
+    padding: auto;
+    width: 3.5rem;
+    height: 3.6rem;
+}
+.action-buttons{
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+}
+
+.lists{
+    display: grid;
+}
+.lists p{
+    text-align: center;
+}
+li{
+    font-family: "Nerko One", cursive;
+    font-weight: 600;
+    font-style: normal;
+    font-size: 2rem;
+    color: #3e2f0e;
+}
+
+h3,h1{
+    font-family: "Lilita One", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    color: #283845;
+    font-size: 1.3rem;
+    text-align: center;
+}

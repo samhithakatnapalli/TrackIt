@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>List</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Lilita+One&family=Luckiest+Guy&family=Margarine&family=Nerko+One&family=Outfit:wght@100..900&family=Special+Elite&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="../static/styles.css">
+    </head>
+    <body>
+        <a href="{{ url_for(list_key) }}" id="back-button">↩</a>
+        <h1>{{ message }}</h1>
+
+        {% if show_delete %}
+            {% for item in matches %}
+                <form action="/delete/{{ list_key }}" method="POST" class="search-results">
+                    <input type="hidden" name="title" value="{{ item.title }}">
+                    <input type="hidden" name="author" value="{{ item.author }}">
+                    {% if item.author %}
+                    <ul>
+                        <li><h3 class="heading">Item found: {{ item.title }} by {{ item.author }}</h3></li>
+                    </ul>
+                    {% else %}
+                    <ul>
+                        <li><h3 class="heading">Item found: {{ item.title }}</h3></li>
+                    </ul>
+                    {% endif %}
+                    <button id="delete_button">🗙</button>
+                </form>
+            {% endfor %}
+        {% endif %}
+
+        {% if show_list %}
+        <div class="lists">
+            <h1>Your {{ list_name }} List</h1>
+            <ul>
+                {% for book in tbr_books %}
+                    {% if book.author %}
+                    <li><b>{{ book.title }}</b> by {{ book.author }}</li>
+                    {% else %}
+                    <li><b>{{ book.title }}</b></li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+
+    </body>
+</html>

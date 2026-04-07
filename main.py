@@ -1,16 +1,20 @@
 from flask import Flask,render_template,request,redirect,url_for
-import sqlite3
+import psycopg2,os
 
 app = Flask(__name__)
 
+# opening database
+def get_db():
+    return psycopg2.connect(os.environ.get("DATABASE_URL"))
+
 # setting up SQLite database to store user data
 def db_setup():
-    connection = sqlite3.connect('storage.db')
+    connection = get_db()
     cursor = connection.cursor()
 
     cursor.execute('''
                     CREATE TABLE IF NOT EXISTS storage (
-                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    id SERIAL PRIMARY KEY,
                     title TEXT NOT NULL,
                     author TEXT NOT NULL,
                     list_name TEXT NOT NULL,
@@ -19,13 +23,8 @@ def db_setup():
                 ''')
 
     connection.commit()
+    cursor.close()
     connection.close()
-
-# opening database
-def get_db():
-    connection = sqlite3.connect('storage.db',timeout=10)
-    connection.row_factory = sqlite3.Row
-    return connection
 
 # home page
 @app.route('/')
@@ -73,15 +72,16 @@ def list_page(list_name):
     cursor = connection.cursor()
 
     cursor.execute(
-        'SELECT title, author FROM storage where list_name = ? AND user_name = ?', 
+        'SELECT title, author FROM storage where list_name = %s AND user_name = %s', 
         (list_name, request.args.get('user_name'))
     )
 
     rows = cursor.fetchall()  # list of sqlite3.Row objects (not in dict format)
+    cursor.close()
     connection.close()
 
     # converting list of sqlite3.Row objects to list of dicts
-    data = [{'title': row['title'], 'author': row['author']} for row in rows]
+    data = [{'title': row[0], 'author': row[1]} for row in rows]
 
     # sorting by title
     sorted_list = sorted(data, key=lambda x: x['title'])
@@ -108,11 +108,12 @@ def add_and_search_item(list_name):
             cursor = connection.cursor()
 
             cursor.execute(
-                'INSERT INTO storage (title, author, list_name, user_name) VALUES (?, ?, ?, ?)', 
+                'INSERT INTO storage (title, author, list_name, user_name) VALUES (%s, %s, %s, %s)', 
                 (title, author, list_name, request.form.get('user_name'))
             )
 
             connection.commit()
+            cursor.close()
             connection.close()
 
         return redirect(url_for(list_name, user_name=request.form.get('user_name')))
@@ -124,16 +125,17 @@ def add_and_search_item(list_name):
 
         if author:
             cursor.execute(
-                'SELECT title, author FROM storage where TRIM(LOWER(title)) = ? AND TRIM(LOWER(author)) = ? AND list_name = ? AND user_name = ?',
+                'SELECT title, author FROM storage where TRIM(LOWER(title)) = %s AND TRIM(LOWER(author)) = %s AND list_name = %s AND user_name = %s',
                 (title.lower().strip(), author.lower().strip(), list_name, request.form.get('user_name'))
             )
         else:
             cursor.execute(
-                'SELECT title, author FROM storage where TRIM(LOWER(title)) = ? AND list_name = ? AND user_name = ?',
+                'SELECT title, author FROM storage where TRIM(LOWER(title)) = %s AND list_name = %s AND user_name = %s',
                 (title.lower().strip(), list_name, request.form.get('user_name'))
             )
         
         matches = cursor.fetchall()
+        cursor.close()
         connection.close()
 
         if matches:
@@ -157,7 +159,7 @@ def delete_item(list_name):
     cursor = connection.cursor()
 
     cursor.execute(
-        'DELETE FROM storage WHERE TRIM(LOWER(title)) = ? AND TRIM(LOWER(author)) = ? AND list_name = ? AND user_name = ?',
+        'DELETE FROM storage WHERE TRIM(LOWER(title)) = %s AND TRIM(LOWER(author)) = %s AND list_name = %s AND user_name = %s',
         (title.lower().strip(), author.lower().strip(), list_name, request.form.get('user_name'))
     )
     connection.commit()    
@@ -174,6 +176,7 @@ def delete_item(list_name):
         else:
             message=f'"{title}" not found. Try adding it to the list first.'
 
+    cursor.close()
     connection.close()
 
     return render_template('status.html', user_name=request.form.get('user_name'), message=message, display_name=display_name, key_name=key_name, show_list=False, show_delete=False)

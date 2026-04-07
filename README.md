@@ -1,27 +1,59 @@
-# Stacked – Personal Media Tracker
+# TrackIt Web App
 
-A simple web app to manage your books, movies, and shows across different lists.
+A simple multi-user web app to track your books and shows — built using **Flask + SQLite**.
+
+---
 
 ## Features
-- Add items (books / movies / series)
-- Search items within lists
-- Delete items
 
-### Separate lists:
-- To Read
-- To Watch
-- Read
-- Watched
-- Dynamic routing for all lists
-- JSON-based storage (no database needed)
+*  Track **To Read / Read** books
+*  Track **To Watch / Watched** shows & movies
+*  Multi-user support (no login, just enter your name)
+*  Search items in your lists
+*  Add new items
+*  Delete items
+*  View sorted lists
+
+---
 
 ## Tech Stack
-- Python (Flask)
-- HTML + CSS
-- JSON (for data storage)
 
-## Notes
-- This project uses local JSON files instead of a database for simplicity.
-- Designed as a beginner-friendly full-stack project.
+* **Backend:** Flask (Python)
+* **Database:** SQLite
+* **Frontend:** HTML, CSS
+* **Deployment:** Render
 
-## Deployed link: https://trackit-rvpi.onrender.com/
+---
+
+## 🧠 How it works
+
+* Users enter their name on entry
+* Data is stored with a `user_name` field
+* All users share one database but see only their own data
+* Lists are separated using `list_name`:
+
+  * `tbr`
+  * `to_watch`
+  * `read`
+  * `watched`
+
+---
+
+## Deployment
+
+Deployed using Render.
+
+---
+
+## Future Improvements
+
+* Persistent cloud database (Supabase/PostgreSQL)
+* User authentication (optional)
+* Edit/update items
+* Better UI/UX
+
+---
+
+## Author
+
+Built by Samhitha 💛

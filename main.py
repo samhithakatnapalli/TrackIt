@@ -5,7 +5,7 @@ app = Flask(__name__)
 
 # opening database
 def get_db():
-    return psycopg2.connect(os.environ["DATABASE_URL"])
+    return psycopg2.connect(os.environ["DATABASE_URL"],sslmode="require")
 
 # setting up SQLite database to store user data
 def db_setup():
@@ -185,4 +185,4 @@ def delete_item(list_name):
 if __name__ == '__main__':
     db_setup()
     port = int(os.environ.get('PORT', 5000))
-    app.run(host='0.0.0.0', port=port, debug=True)
+    app.run(host='0.0.0.0', port=port)

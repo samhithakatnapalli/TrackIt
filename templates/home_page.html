@@ -10,6 +10,7 @@
         <link rel="stylesheet" href="../static/styles.css">
     </head>
     <body>
+        <a href="{{ url_for('home', user_name=user_name) }}" id="back-button">↩</a>
         <div class="heading">
             <p><b>Wel</b>come {{ user_name }}~<br>Your one stop to <b>track all your hobbies!</b></p>
         </div>

@@ -118,7 +118,7 @@ def list_page(list_name):
 def add_and_search_item(list_name):
     # get title and author from form, convert to title case
     action = request.form.get('action')
-    title = (request.form.get('title') or '').strip()
+    title = (request.form.get('title') or '').strip().title()
     author = (request.form.get('author') or '').title()
     category = (request.form.get('category') or '').strip().lower()
     
@@ -189,7 +189,7 @@ def add_and_search_item(list_name):
 # delete item from list
 @app.route('/delete/<list_name>', methods=['POST'])
 def delete_item(list_name):
-    title = (request.form.get('title') or '').strip()
+    title = (request.form.get('title') or '').strip().title()
     author = (request.form.get('author') or '').title()
     category = (request.form.get('category') or '').strip().lower()
 

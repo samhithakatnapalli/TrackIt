@@ -18,6 +18,7 @@
                 {% for item in matches %}
                     <li class="search-item">
                         <form action="/delete/{{ key_name }}" method="POST" class="delete-form">
+                            <input type="hidden" name="category" value="{{ category }}">
                             <input type="hidden" name="user_name" value="{{ user_name }}">
                             <input type="hidden" name="title" value="{{ item.title }}">
                             <input type="hidden" name="author" value="{{ item.author }}">

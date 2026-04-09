@@ -155,46 +155,41 @@ button{
     justify-content: center;
 }
 
-.search-results{
+/* Remove button styling for delete X */
+.delete-x {
+    all: unset; /* resets all inherited button styles */
+    cursor: pointer;
+    color: #7a3608;
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-left: 1rem;
+}
+
+/* Flex layout for each item */
+.search-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    gap: 1rem;
-}
-#delete_button,#edit_button{
-    font-family: "Special Elite", system-ui;
-    font-weight: 600;
-    font-style: normal;
-    font-size: larger;
+    margin: 0.5rem 0; /* smaller spacing between items */
     padding: 0.5rem 1rem;
-    
-    background-color: transparent;
-    border: none;
-    color: #7a3608;
-    font-size: 1.6rem;
-    text-decoration: none;
-    padding: auto;
-    width: 3.5rem;
-    height: 3.6rem;
-}
-.action-buttons{
-    display: flex;
-    gap: 1rem;
-    justify-content: center;
+    background-color: #f8e0b0; /* optional light background for items */
+    border-radius: 5px;
 }
 
-.lists{
-    display: grid;
+/* Remove form margins/padding */
+.delete-form {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
 }
-.lists p{
-    text-align: center;
-}
-li{
-    font-family: "Nerko One", cursive;
+
+/* Text styling */
+.item-text {
+    font-family: "Special Elite", system-ui;
     font-weight: 600;
-    font-style: normal;
-    font-size: 2rem;
-    color: #3e2f0e;
+    font-size: 1.1rem;
+    color: #1f2937; /* dark text */
 }
 
 h3,h1{

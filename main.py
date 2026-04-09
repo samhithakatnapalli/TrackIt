@@ -129,8 +129,8 @@ def add_and_search_item(list_name):
 
     category = (request.form.get('category') or '').strip().title() or None
     
-    if category and category.lower() == 'null':
-        category = ''
+    if not category or category == 'None':
+        category = None
     
     if list_name not in file_data:
         return render_template('status.html', message='Invalid list name.', category=category, user_name=request.form.get('user_name'), show_list=False, show_delete=False)
@@ -233,9 +233,10 @@ def add_and_search_item(list_name):
 def delete_item(list_name):
     title = (request.form.get('title') or '').strip().title()
     author = (request.form.get('author') or '').title()
+
     category = (request.form.get('category') or '').strip().title() or None
-    if category and category.lower() == 'null':
-        category = ''
+    if not category or category == 'None':
+        category = None
 
     print(f"DELETE: title={title}, category={category}, category_bool={bool(category)}")
 

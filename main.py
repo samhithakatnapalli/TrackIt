@@ -62,28 +62,34 @@ def home_page():
 
 @app.route('/tbr')
 def tbr():
-    category = (request.args.get('category') or '').strip().lower()
+    category = request.args.get('category')
+    category = category.strip().title() if category else None
     return render_template('tbr.html',user_name=request.args.get('user_name'), category=category)
 
 @app.route('/to_watch')
 def to_watch():
-    category = (request.args.get('category') or '').strip().lower()
+    category = request.args.get('category')
+    category = category.strip().title() if category else None
     return render_template('to_watch.html',user_name=request.args.get('user_name'), category=category)
 
 @app.route('/read')
 def read():
-    category = (request.args.get('category') or '').strip().lower()
+    category = request.args.get('category')
+    category = category.strip().title() if category else None
     return render_template('read.html',user_name=request.args.get('user_name'), category=category)
 
 @app.route('/watched')
 def watched():
-    category = (request.args.get('category') or '').strip().lower()
+    category = request.args.get('category')
+    category = category.strip().title() if category else None
     return render_template('watched.html',user_name=request.args.get('user_name'), category=category)
 
 # list page
 @app.route('/list_page/<list_name>')
 def list_page(list_name):
-    category = (request.args.get('category') or '').strip().lower()
+    category = request.args.get('category')
+    category = category.strip().title() if category else None
+
     if list_name not in file_data:
         return render_template('status.html',message='Invalid list name.',category=category,user_name=request.args.get('user_name'),show_list=False, show_delete=False)
     key_name, display_name = file_data[list_name]
@@ -93,12 +99,12 @@ def list_page(list_name):
 
     if category:
         cursor.execute(
-            'SELECT title, author, category FROM storage where list_name = %s AND user_name = %s AND category = %s', 
-            (list_name, request.args.get('user_name'), category if category else None)
+            'SELECT title, author, category FROM storage where list_name = %s AND user_name = %s AND LOWER(category) = LOWER(%s)', 
+            (list_name, request.args.get('user_name'), category)
         )
     else:
         cursor.execute(
-            'SELECT title, author, category FROM storage where list_name = %s AND user_name = %s', 
+            'SELECT title, author, category FROM storage where list_name = %s AND user_name = %s AND category IS NULL', 
             (list_name, request.args.get('user_name'))
         )
 
@@ -120,7 +126,11 @@ def add_and_search_item(list_name):
     action = request.form.get('action')
     title = (request.form.get('title') or '').strip().title()
     author = (request.form.get('author') or '').title()
-    category = (request.form.get('category') or '').strip().lower()
+
+    category = (request.form.get('category') or '').strip().title() or None
+    
+    if category == 'null':
+        category = ''
     
     if list_name not in file_data:
         return render_template('status.html', message='Invalid list name.', category=category, user_name=request.form.get('user_name'), show_list=False, show_delete=False)
@@ -141,8 +151,8 @@ def add_and_search_item(list_name):
                         AND TRIM(LOWER(author)) = %s 
                         AND list_name = %s 
                         AND user_name = %s 
-                        AND category = %s''',
-                    (title.lower().strip(), author.lower().strip(), list_name, request.form.get('user_name'), category if category else None)
+                        AND LOWER(category) = LOWER(%s)''',
+                    (title.lower().strip(), author.lower().strip(), list_name, request.form.get('user_name'), category)
                 )
 
             else:
@@ -163,7 +173,7 @@ def add_and_search_item(list_name):
             else:
                 cursor.execute(
                     'INSERT INTO storage (title, author, list_name, user_name, category) VALUES (%s, %s, %s, %s, %s)',
-                    (title, author, list_name, request.form.get('user_name'), category if category else None)
+                    (title, author, list_name, request.form.get('user_name'), category)
                 )
                 message = f'"{title}" added successfully to {category or "General"}.'
 
@@ -183,30 +193,30 @@ def add_and_search_item(list_name):
 
         if title == '' and category:
             cursor.execute(
-                'SELECT title, author, category FROM storage WHERE list_name=%s AND user_name=%s AND category=%s',
-                (list_name, request.form.get('user_name'), category if category else None)
+                'SELECT title, author, category FROM storage WHERE list_name=%s AND user_name=%s AND LOWER(category)=LOWER(%s)',
+                (list_name, request.form.get('user_name'), category)
             )
 
         elif author:
             if category:
                 cursor.execute(
-                    'SELECT title, author, category FROM storage where TRIM(LOWER(title)) = %s AND TRIM(LOWER(author)) = %s AND list_name = %s AND user_name = %s AND category = %s',
-                    (title.lower().strip(), author.lower().strip(), list_name, request.form.get('user_name'), category if category else None)
+                    'SELECT title, author, category FROM storage where TRIM(LOWER(title)) = %s AND TRIM(LOWER(author)) = %s AND list_name = %s AND user_name = %s AND LOWER(category)=LOWER(%s)',
+                    (title.lower().strip(), author.lower().strip(), list_name, request.form.get('user_name'), category)
                 )
             else:
                 cursor.execute(
-                    'SELECT title, author, category FROM storage where TRIM(LOWER(title)) = %s AND TRIM(LOWER(author)) = %s AND list_name = %s AND user_name = %s',
+                    'SELECT title, author, category FROM storage where TRIM(LOWER(title)) = %s AND TRIM(LOWER(author)) = %s AND list_name = %s AND user_name = %s AND category IS NULL',
                     (title.lower().strip(), author.lower().strip(), list_name, request.form.get('user_name'))
                 )
         else:
             if category:
                 cursor.execute(
-                    'SELECT title, author, category FROM storage where TRIM(LOWER(title)) = %s AND list_name = %s AND user_name = %s AND category = %s',
-                    (title.lower().strip(), list_name, request.form.get('user_name'), category if category else None)
+                    'SELECT title, author, category FROM storage where TRIM(LOWER(title)) = %s AND list_name = %s AND user_name = %s AND LOWER(category)=LOWER(%s)',
+                    (title.lower().strip(), list_name, request.form.get('user_name'), category)
                 )
             else:
                 cursor.execute(
-                    'SELECT title, author, category FROM storage where TRIM(LOWER(title)) = %s AND list_name = %s AND user_name = %s',
+                    'SELECT title, author, category FROM storage where TRIM(LOWER(title)) = %s AND list_name = %s AND user_name = %s AND category IS NULL',
                     (title.lower().strip(), list_name, request.form.get('user_name'))
                 )
         
@@ -224,7 +234,8 @@ def add_and_search_item(list_name):
 def delete_item(list_name):
     title = (request.form.get('title') or '').strip().title()
     author = (request.form.get('author') or '').title()
-    category = (request.form.get('category') or '').strip().lower()
+    category = (request.form.get('category') or '').strip().title() or None
+    
     if category == 'null':
         category = ''
 
@@ -244,8 +255,8 @@ def delete_item(list_name):
                 AND TRIM(LOWER(author)) = %s 
                 AND list_name = %s 
                 AND user_name = %s 
-                AND category = %s''',
-            (title.lower().strip(), author.lower().strip(), list_name, request.form.get('user_name'), category if category else None)
+                AND TRIM(LOWER(category)) = LOWER(%s)''',
+            (title.lower().strip(), author.lower().strip(), list_name, request.form.get('user_name'), category)
         )
     else:
         cursor.execute(

@@ -174,7 +174,7 @@ def add_and_search_item(list_name):
                     'INSERT INTO storage (title, author, list_name, user_name, category) VALUES (%s, %s, %s, %s, %s)',
                     (title, author, list_name, request.form.get('user_name'), category)
                 )
-                message = f'"{title}" added successfully to {category if category else "General"}.'
+                message = f'"{title}" added successfully to {category or "General"}.'
 
             cursor.close()
             db_pool.putconn(connection)

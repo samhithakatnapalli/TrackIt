@@ -24,9 +24,9 @@
 
                             <span class="item-text">
                                 {% if item.author %}
-                                    Item found: {{ item.title }} by {{ item.author }}
+                                    {{ item.title }} by {{ item.author }}
                                 {% else %}
-                                    Item found: {{ item.title }}
+                                    {{ item.title }}
                                 {% endif %}
                             </span>
                             <button type="submit" class="delete-x">×</button>

@@ -141,7 +141,7 @@ def add_and_search_item(list_name):
                     AND list_name = %s 
                     AND user_name = %s 
                     AND category = %s''',
-                (title.lower().strip(), author.lower().strip(), list_name, request.form.get('user_name'), category)
+                (title.lower().strip(), author.lower().strip(), list_name, request.form.get('user_name'), category if category else None)
             )
             exists = cursor.fetchone()
 
@@ -158,6 +158,10 @@ def add_and_search_item(list_name):
             db_pool.putconn(connection)
 
             return render_template('status.html', user_name=request.form.get('user_name'), message=message, show_list=False, show_delete=False)
+        
+        else:
+            return render_template('status.html', user_name=request.form.get('user_name'),
+                                message='Please enter a title.', show_list=False, show_delete=False)
     
     ## search for item in list
     elif action == 'search':

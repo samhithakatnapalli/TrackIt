@@ -85,7 +85,7 @@ def watched():
 def list_page(list_name):
     category = (request.args.get('category') or '').strip().lower()
     if list_name not in file_data:
-        return render_template('status.html', message='Invalid list name.',category=category,user_name=request.args.get('user_name'),show_list=False, show_delete=False)
+        return render_template('status.html',message='Invalid list name.',category=category,user_name=request.args.get('user_name'),show_list=False, show_delete=False)
     key_name, display_name = file_data[list_name]
     
     connection = get_db()
@@ -123,7 +123,7 @@ def add_and_search_item(list_name):
     category = (request.form.get('category') or '').strip().lower()
     
     if list_name not in file_data:
-        return render_template('status.html', message='Invalid list name.',category=category,user_name=request.form.get('user_name'),show_list=False, show_delete=False)
+        return render_template('status.html', message='Invalid list name.', category=category, user_name=request.form.get('user_name'), show_list=False, show_delete=False)
     key_name, display_name = file_data[list_name]
 
     # selecting action to perform based on user input
@@ -170,10 +170,10 @@ def add_and_search_item(list_name):
             cursor.close()
             db_pool.putconn(connection)
 
-            return render_template('status.html', user_name=request.form.get('user_name'), message=message, show_list=False, show_delete=False)
+            return render_template('status.html', key_name=key_name, display_name=display_name, user_name=request.form.get('user_name'), message=message, show_list=False, show_delete=False)
         
         else:
-            return render_template('status.html', user_name=request.form.get('user_name'),
+            return render_template('status.html', key_name=key_name, display_name=display_name, user_name=request.form.get('user_name'),
                                 message='Please enter a title.', show_list=False, show_delete=False)
     
     ## search for item in list
@@ -217,7 +217,7 @@ def add_and_search_item(list_name):
         if matches:
             return render_template('status.html', category=category, user_name=request.form.get('user_name'), key_name=key_name, display_name=display_name, matches=matches, message = f'Showing items in {category} category.' if title == '' and category else 'Item(s) found in list.', show_delete=True, show_list=False)
         else:
-            return render_template('status.html', category=category, user_name=request.form.get('user_name'), key_name=key_name, message='Item not found. Try adding it to the list first.', show_list=False, show_delete=False)
+            return render_template('status.html', category=category, user_name=request.form.get('user_name'), key_name=key_name, display_name=display_name, message='Item not found. Try adding it to the list first.', show_list=False, show_delete=False)
         
 # delete item from list
 @app.route('/delete/<list_name>', methods=['POST'])
@@ -227,7 +227,7 @@ def delete_item(list_name):
     category = (request.form.get('category') or '').strip().lower()
 
     if list_name not in file_data:
-        return render_template('status.html', message='Invalid list name.',category=category,user_name=request.form.get('user_name'),show_list=False, show_delete=False)
+        return render_template('status.html', message='Invalid list name.', category=category, user_name=request.form.get('user_name'), show_list=False, show_delete=False)
     key_name, display_name = file_data[list_name]
 
     connection = get_db()
@@ -267,7 +267,7 @@ def delete_item(list_name):
 
     cursor.close()
     db_pool.putconn(connection)
-    return render_template('status.html', user_name=request.form.get('user_name'), message=message, show_list=False, show_delete=False)
+    return render_template('status.html', key_name=key_name, display_name=display_name, user_name=request.form.get('user_name'), message=message, show_list=False, show_delete=False)
 
 if __name__ == '__main__':
     init_pool()

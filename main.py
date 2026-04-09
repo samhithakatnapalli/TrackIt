@@ -94,7 +94,7 @@ def list_page(list_name):
     if category:
         cursor.execute(
             'SELECT title, author FROM storage where list_name = %s AND user_name = %s AND category = %s', 
-            (list_name, request.args.get('user_name'), category)
+            (list_name, request.args.get('user_name'), category if category else None)
         )
     else:
         cursor.execute(
@@ -134,15 +134,28 @@ def add_and_search_item(list_name):
             cursor = connection.cursor()
 
             # check if the exact item already exists
-            cursor.execute(
-                '''SELECT id FROM storage 
-                WHERE TRIM(LOWER(title)) = %s 
-                    AND TRIM(LOWER(author)) = %s 
-                    AND list_name = %s 
-                    AND user_name = %s 
-                    AND category = %s''',
-                (title.lower().strip(), author.lower().strip(), list_name, request.form.get('user_name'), category if category else None)
-            )
+            if category:
+                cursor.execute(
+                    '''SELECT id FROM storage 
+                    WHERE TRIM(LOWER(title)) = %s 
+                        AND TRIM(LOWER(author)) = %s 
+                        AND list_name = %s 
+                        AND user_name = %s 
+                        AND category = %s''',
+                    (title.lower().strip(), author.lower().strip(), list_name, request.form.get('user_name'), category if category else None)
+                )
+
+            else:
+                cursor.execute(
+                    '''SELECT id FROM storage 
+                    WHERE TRIM(LOWER(title)) = %s 
+                        AND TRIM(LOWER(author)) = %s 
+                        AND list_name = %s 
+                        AND user_name = %s
+                        AND category IS NULL''',
+                    (title.lower().strip(), author.lower().strip(), list_name, request.form.get('user_name'))
+                )
+
             exists = cursor.fetchone()
 
             if exists:
@@ -150,7 +163,7 @@ def add_and_search_item(list_name):
             else:
                 cursor.execute(
                     'INSERT INTO storage (title, author, list_name, user_name, category) VALUES (%s, %s, %s, %s, %s)',
-                    (title, author, list_name, request.form.get('user_name'), category)
+                    (title, author, list_name, request.form.get('user_name'), category if category else None)
                 )
                 message = f'"{title}" added successfully to {category or "General"}.'
 
@@ -171,14 +184,14 @@ def add_and_search_item(list_name):
         if title == '' and category:
             cursor.execute(
                 'SELECT title, author FROM storage WHERE list_name=%s AND user_name=%s AND category=%s',
-                (list_name, request.form.get('user_name'), category)
+                (list_name, request.form.get('user_name'), category if category else None)
             )
 
         elif author:
             if category:
                 cursor.execute(
                     'SELECT title, author FROM storage where TRIM(LOWER(title)) = %s AND TRIM(LOWER(author)) = %s AND list_name = %s AND user_name = %s AND category = %s',
-                    (title.lower().strip(), author.lower().strip(), list_name, request.form.get('user_name'), category)
+                    (title.lower().strip(), author.lower().strip(), list_name, request.form.get('user_name'), category if category else None)
                 )
             else:
                 cursor.execute(
@@ -189,7 +202,7 @@ def add_and_search_item(list_name):
             if category:
                 cursor.execute(
                     'SELECT title, author FROM storage where TRIM(LOWER(title)) = %s AND list_name = %s AND user_name = %s AND category = %s',
-                    (title.lower().strip(), list_name, request.form.get('user_name'), category)
+                    (title.lower().strip(), list_name, request.form.get('user_name'), category if category else None)
                 )
             else:
                 cursor.execute(
@@ -220,15 +233,26 @@ def delete_item(list_name):
     connection = get_db()
     cursor = connection.cursor()
 
-    cursor.execute(
-        '''DELETE FROM storage 
-        WHERE TRIM(LOWER(title)) = %s 
-            AND TRIM(LOWER(author)) = %s 
-            AND list_name = %s 
-            AND user_name = %s 
-            AND category = %s''',
-        (title.lower().strip(), author.lower().strip(), list_name, request.form.get('user_name'), request.form.get('category'))
-    )
+    if category:
+        cursor.execute(
+            '''DELETE FROM storage 
+            WHERE TRIM(LOWER(title)) = %s 
+                AND TRIM(LOWER(author)) = %s 
+                AND list_name = %s 
+                AND user_name = %s 
+                AND category = %s''',
+            (title.lower().strip(), author.lower().strip(), list_name, request.form.get('user_name'), category if category else None)
+        )
+    else:
+        cursor.execute(
+            '''DELETE FROM storage 
+            WHERE TRIM(LOWER(title)) = %s 
+                AND TRIM(LOWER(author)) = %s 
+                AND list_name = %s 
+                AND user_name = %s
+                AND category IS NULL''',
+            (title.lower().strip(), author.lower().strip(), list_name, request.form.get('user_name'))
+        )
 
     if cursor.rowcount > 0:
         if author:

@@ -166,7 +166,7 @@ button{
 }
 
 /* Flex layout for each item */
-.search-item {
+.search-item, .list-item {
     display: flex;
     justify-content: space-between;
     align-items: center;

@@ -177,8 +177,6 @@ def add_and_search_item(list_name):
 
         if matches:
             return render_template('status.html', category=category, user_name=request.form.get('user_name'), key_name=key_name, display_name=display_name, matches=matches, message='Item(s) found in list.', show_delete=True, show_list=False)
-        elif title == '':
-            return render_template('status.html', category=category, user_name=request.form.get('user_name'), key_name=key_name, message='Please enter a title to search.', show_list=False, show_delete=False)
         else:
             return render_template('status.html', category=category, user_name=request.form.get('user_name'), key_name=key_name, message='Item not found. Try adding it to the list first.', show_list=False, show_delete=False)
         

@@ -265,9 +265,9 @@ def delete_item(list_name):
             message = f'{title} deleted successfully'
     else:
         if author:
-            message = f'"{title} by {author}" not found in {request.form.get("category") or "General"}.'
+            message = f'"{title} by {author}" not found in {category or "General"}.'
         else:
-            message = f'"{title}" not found in {request.form.get("category") or "General"}.'
+            message = f'"{title}" not found in {category or "General"}.'
 
     cursor.close()
     db_pool.putconn(connection)

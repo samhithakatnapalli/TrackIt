@@ -129,22 +129,35 @@ def add_and_search_item(list_name):
     # selecting action to perform based on user input
     ## add item to list
     if action == 'add':
-        if title.strip():
+        if title != '':
             connection = get_db()
             cursor = connection.cursor()
 
+            # check if the exact item already exists
             cursor.execute(
-                'INSERT INTO storage (title, author, list_name, user_name, category) VALUES (%s, %s, %s, %s, %s)', 
-                (title, author, list_name, request.form.get('user_name'), category if category else None)
+                '''SELECT id FROM storage 
+                WHERE TRIM(LOWER(title)) = %s 
+                    AND TRIM(LOWER(author)) = %s 
+                    AND list_name = %s 
+                    AND user_name = %s 
+                    AND category = %s''',
+                (title.lower().strip(), author.lower().strip(), list_name, request.form.get('user_name'), category)
             )
+            exists = cursor.fetchone()
+
+            if exists:
+                message = f'"{title}" already exists in {category or "General"}.'
+            else:
+                cursor.execute(
+                    'INSERT INTO storage (title, author, list_name, user_name, category) VALUES (%s, %s, %s, %s, %s)',
+                    (title, author, list_name, request.form.get('user_name'), category)
+                )
+                message = f'"{title}" added successfully to {category or "General"}.'
 
             cursor.close()
             db_pool.putconn(connection)
 
-        else:
-            return render_template('status.html', category=category, user_name=request.form.get('user_name'), key_name=key_name, message='Title cannot be empty.', show_list=False, show_delete=False)
-
-        return redirect(url_for('list_page', list_name=list_name, user_name=request.form.get('user_name'), category=category))
+            return render_template('status.html', user_name=request.form.get('user_name'), message=message, show_list=False, show_delete=False)
     
     ## search for item in list
     elif action == 'search':
@@ -203,45 +216,30 @@ def delete_item(list_name):
     connection = get_db()
     cursor = connection.cursor()
 
-    if author:
-        if category:
-            cursor.execute(
-                'DELETE FROM storage WHERE TRIM(LOWER(title)) = %s AND TRIM(LOWER(author)) = %s AND list_name = %s AND user_name = %s AND category = %s',
-                (title.lower().strip(), author.lower().strip(), list_name, request.form.get('user_name'), category)
-            )
-        else:
-            cursor.execute(
-                'DELETE FROM storage WHERE TRIM(LOWER(title)) = %s AND TRIM(LOWER(author)) = %s AND list_name = %s AND user_name = %s',
-                (title.lower().strip(), author.lower().strip(), list_name, request.form.get('user_name'))
-            )
-    else:
-        if category:
-            cursor.execute(
-                'DELETE FROM storage WHERE TRIM(LOWER(title)) = %s AND list_name = %s AND user_name = %s AND category = %s',
-                (title.lower().strip(), list_name, request.form.get('user_name'), category)
-            )
-        else:
-            cursor.execute(
-                'DELETE FROM storage WHERE TRIM(LOWER(title)) = %s AND list_name = %s AND user_name = %s',
-                (title.lower().strip(), list_name, request.form.get('user_name'))
-            )
+    cursor.execute(
+        '''DELETE FROM storage 
+        WHERE TRIM(LOWER(title)) = %s 
+            AND TRIM(LOWER(author)) = %s 
+            AND list_name = %s 
+            AND user_name = %s 
+            AND category = %s''',
+        (title.lower().strip(), author.lower().strip(), list_name, request.form.get('user_name'), request.form.get('category'))
+    )
 
-    if cursor.rowcount > 0 :
+    if cursor.rowcount > 0:
         if author:
-            message=f'{title} by {author} deleted successfully'
+            message = f'{title} by {author} deleted successfully'
         else:
-            message=f'{title} deleted successfully'
+            message = f'{title} deleted successfully'
     else:
         if author:
-            message=f'"{title} by {author}" not found. Try adding it to the list first.'
+            message = f'"{title} by {author}" not found in {request.form.get("category") or "General"}.'
         else:
-            message=f'"{title}" not found. Try adding it to the list first.'
+            message = f'"{title}" not found in {request.form.get("category") or "General"}.'
 
     cursor.close()
     db_pool.putconn(connection)
-
-    return render_template('status.html', category=category, user_name=request.form.get('user_name'), message=message, display_name=display_name, key_name=key_name, show_list=False, show_delete=False)
-
+    return render_template('status.html', user_name=request.form.get('user_name'), message=message, show_list=False, show_delete=False)
 
 if __name__ == '__main__':
     init_pool()

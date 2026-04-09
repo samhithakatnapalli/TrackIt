@@ -93,7 +93,7 @@ def list_page(list_name):
 
     if category:
         cursor.execute(
-            'SELECT title, author FROM storage where list_name = %s AND user_name = %s AND category = %s', 
+            'SELECT title, author, category FROM storage where list_name = %s AND user_name = %s AND category = %s', 
             (list_name, request.args.get('user_name'), category if category else None)
         )
     else:
@@ -210,7 +210,7 @@ def add_and_search_item(list_name):
                     (title.lower().strip(), list_name, request.form.get('user_name'))
                 )
         
-        matches = [{'title': row[0], 'author': row[1]} for row in cursor.fetchall()]
+        matches = [{'title': row[0], 'author': row[1], 'category': row[2] } for row in cursor.fetchall()]
         cursor.close()
         db_pool.putconn(connection)
 

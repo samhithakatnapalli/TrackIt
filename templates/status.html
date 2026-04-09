@@ -36,21 +36,23 @@
             {% endif %}
         </ul>
         
-
-        {% if show_list %}
-        <div class="lists">
-            <h1>Your {{ display_name }} List</h1>
-            <ul>
-                {% for book in tbr_books %}
-                    {% if book.author %}
-                    <li><b>{{ book.title }}</b> by {{ book.author }}</li>
-                    {% else %}
-                    <li><b>{{ book.title }}</b></li>
-                    {% endif %}
-                {% endfor %}
-            </ul>
-        </div>
-        {% endif %}
+        <ul>
+            {% if show_list %}
+            <div class="lists">
+                <h1>Your {{ display_name }} List</h1>
+                    {% for book in tbr_books %}
+                        <span class="item-text">
+                            {% if book.author %}
+                            <b>{{ book.title }}</b> by {{ book.author }}
+                            {% else %}
+                            <b>{{ book.title }}</b>
+                            {% endif %}
+                        </span>
+                    {% endfor %}
+            </div>
+            {% endif %}
+        </ul>
+        
 
     </body>
 </html>

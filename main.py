@@ -226,6 +226,9 @@ def delete_item(list_name):
     author = (request.form.get('author') or '').title()
     category = (request.form.get('category') or '').strip().lower()
 
+    print(f"DELETE: title={title}, category={category}, category_bool={bool(category)}")  # ← add this
+
+
     if list_name not in file_data:
         return render_template('status.html', message='Invalid list name.', category=category, user_name=request.form.get('user_name'), show_list=False, show_delete=False)
     key_name, display_name = file_data[list_name]

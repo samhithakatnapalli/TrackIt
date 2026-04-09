@@ -148,7 +148,13 @@ def add_and_search_item(list_name):
         connection = get_db()
         cursor = connection.cursor()
 
-        if author:
+        if title == '' and category:
+            cursor.execute(
+                'SELECT title, author FROM storage WHERE list_name=%s AND user_name=%s AND category=%s',
+                (list_name, request.form.get('user_name'), category)
+            )
+
+        elif author:
             if category:
                 cursor.execute(
                     'SELECT title, author FROM storage where TRIM(LOWER(title)) = %s AND TRIM(LOWER(author)) = %s AND list_name = %s AND user_name = %s AND category = %s',
@@ -176,7 +182,7 @@ def add_and_search_item(list_name):
         db_pool.putconn(connection)
 
         if matches:
-            return render_template('status.html', category=category, user_name=request.form.get('user_name'), key_name=key_name, display_name=display_name, matches=matches, message='Item(s) found in list.', show_delete=True, show_list=False)
+            return render_template('status.html', category=category, user_name=request.form.get('user_name'), key_name=key_name, display_name=display_name, matches=matches, message = f'Showing items in {category} category.' if title == '' and category else 'Item(s) found in list.', show_delete=True, show_list=False)
         else:
             return render_template('status.html', category=category, user_name=request.form.get('user_name'), key_name=key_name, message='Item not found. Try adding it to the list first.', show_list=False, show_delete=False)
         

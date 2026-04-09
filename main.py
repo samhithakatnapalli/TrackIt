@@ -129,7 +129,7 @@ def add_and_search_item(list_name):
     # selecting action to perform based on user input
     ## add item to list
     if action == 'add':
-        if title != '':
+        if title.strip():
             connection = get_db()
             cursor = connection.cursor()
 
@@ -140,6 +140,9 @@ def add_and_search_item(list_name):
 
             cursor.close()
             db_pool.putconn(connection)
+
+        else:
+            return render_template('status.html', category=category, user_name=request.form.get('user_name'), key_name=key_name, message='Title cannot be empty.', show_list=False, show_delete=False)
 
         return redirect(url_for('list_page', list_name=list_name, user_name=request.form.get('user_name'), category=category))
     

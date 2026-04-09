@@ -98,7 +98,7 @@ def list_page(list_name):
         )
     else:
         cursor.execute(
-            'SELECT title, author FROM storage where list_name = %s AND user_name = %s', 
+            'SELECT title, author, category FROM storage where list_name = %s AND user_name = %s', 
             (list_name, request.args.get('user_name'))
         )
 
@@ -107,7 +107,7 @@ def list_page(list_name):
     db_pool.putconn(connection)
 
     # converting list of sqlite3.Row objects to list of dicts
-    data = [{'title': row[0], 'author': row[1]} for row in rows]
+    data = [{'title': row[0], 'author': row[1], 'category': row[2]} for row in rows]
 
     # sorting by title
     sorted_list = sorted(data, key=lambda x: x['title'])
@@ -183,30 +183,30 @@ def add_and_search_item(list_name):
 
         if title == '' and category:
             cursor.execute(
-                'SELECT title, author FROM storage WHERE list_name=%s AND user_name=%s AND category=%s',
+                'SELECT title, author, category FROM storage WHERE list_name=%s AND user_name=%s AND category=%s',
                 (list_name, request.form.get('user_name'), category if category else None)
             )
 
         elif author:
             if category:
                 cursor.execute(
-                    'SELECT title, author FROM storage where TRIM(LOWER(title)) = %s AND TRIM(LOWER(author)) = %s AND list_name = %s AND user_name = %s AND category = %s',
+                    'SELECT title, author, category FROM storage where TRIM(LOWER(title)) = %s AND TRIM(LOWER(author)) = %s AND list_name = %s AND user_name = %s AND category = %s',
                     (title.lower().strip(), author.lower().strip(), list_name, request.form.get('user_name'), category if category else None)
                 )
             else:
                 cursor.execute(
-                    'SELECT title, author FROM storage where TRIM(LOWER(title)) = %s AND TRIM(LOWER(author)) = %s AND list_name = %s AND user_name = %s',
+                    'SELECT title, author, category FROM storage where TRIM(LOWER(title)) = %s AND TRIM(LOWER(author)) = %s AND list_name = %s AND user_name = %s',
                     (title.lower().strip(), author.lower().strip(), list_name, request.form.get('user_name'))
                 )
         else:
             if category:
                 cursor.execute(
-                    'SELECT title, author FROM storage where TRIM(LOWER(title)) = %s AND list_name = %s AND user_name = %s AND category = %s',
+                    'SELECT title, author, category FROM storage where TRIM(LOWER(title)) = %s AND list_name = %s AND user_name = %s AND category = %s',
                     (title.lower().strip(), list_name, request.form.get('user_name'), category if category else None)
                 )
             else:
                 cursor.execute(
-                    'SELECT title, author FROM storage where TRIM(LOWER(title)) = %s AND list_name = %s AND user_name = %s',
+                    'SELECT title, author, category FROM storage where TRIM(LOWER(title)) = %s AND list_name = %s AND user_name = %s',
                     (title.lower().strip(), list_name, request.form.get('user_name'))
                 )
         
@@ -225,9 +225,10 @@ def delete_item(list_name):
     title = (request.form.get('title') or '').strip().title()
     author = (request.form.get('author') or '').title()
     category = (request.form.get('category') or '').strip().lower()
+    if category == 'null':
+        category = ''
 
-    print(f"DELETE: title={title}, category={category}, category_bool={bool(category)}")  # ← add this
-
+    print(f"DELETE: title={title}, category={category}, category_bool={bool(category)}")
 
     if list_name not in file_data:
         return render_template('status.html', message='Invalid list name.', category=category, user_name=request.form.get('user_name'), show_list=False, show_delete=False)

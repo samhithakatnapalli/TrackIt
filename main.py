@@ -104,7 +104,7 @@ def list_page(list_name):
         )
     else:
         cursor.execute(
-            'SELECT title, author, category FROM storage where list_name = %s AND user_name = %s AND category IS NULL', 
+            'SELECT title, author, category FROM storage where list_name = %s AND user_name = %s', 
             (list_name, request.args.get('user_name'))
         )
 
@@ -129,7 +129,7 @@ def add_and_search_item(list_name):
 
     category = (request.form.get('category') or '').strip().title() or None
     
-    if category == 'null':
+    if category and category.lower() == 'null':
         category = ''
     
     if list_name not in file_data:
@@ -161,8 +161,7 @@ def add_and_search_item(list_name):
                     WHERE TRIM(LOWER(title)) = %s 
                         AND TRIM(LOWER(author)) = %s 
                         AND list_name = %s 
-                        AND user_name = %s
-                        AND category IS NULL''',
+                        AND user_name = %s''',
                     (title.lower().strip(), author.lower().strip(), list_name, request.form.get('user_name'))
                 )
 
@@ -205,7 +204,7 @@ def add_and_search_item(list_name):
                 )
             else:
                 cursor.execute(
-                    'SELECT title, author, category FROM storage where TRIM(LOWER(title)) = %s AND TRIM(LOWER(author)) = %s AND list_name = %s AND user_name = %s AND category IS NULL',
+                    'SELECT title, author, category FROM storage where TRIM(LOWER(title)) = %s AND TRIM(LOWER(author)) = %s AND list_name = %s AND user_name = %s',
                     (title.lower().strip(), author.lower().strip(), list_name, request.form.get('user_name'))
                 )
         else:
@@ -216,7 +215,7 @@ def add_and_search_item(list_name):
                 )
             else:
                 cursor.execute(
-                    'SELECT title, author, category FROM storage where TRIM(LOWER(title)) = %s AND list_name = %s AND user_name = %s AND category IS NULL',
+                    'SELECT title, author, category FROM storage where TRIM(LOWER(title)) = %s AND list_name = %s AND user_name = %s',
                     (title.lower().strip(), list_name, request.form.get('user_name'))
                 )
         
@@ -235,8 +234,7 @@ def delete_item(list_name):
     title = (request.form.get('title') or '').strip().title()
     author = (request.form.get('author') or '').title()
     category = (request.form.get('category') or '').strip().title() or None
-    
-    if category == 'null':
+    if category and category.lower() == 'null':
         category = ''
 
     print(f"DELETE: title={title}, category={category}, category_bool={bool(category)}")

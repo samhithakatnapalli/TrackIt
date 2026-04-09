@@ -1,13 +1,28 @@
 from flask import Flask,render_template,request,redirect,url_for
 import psycopg2,os
+from psycopg2 import pool
 
 app = Flask(__name__)
 
+db_pool = None
+
+def init_pool():
+    global db_pool
+    db_pool = pool.SimpleConnectionPool(
+        1, 10,
+        os.environ["DATABASE_URL"],
+        sslmode="require"
+    )
+
 # opening database
 def get_db():
-    return psycopg2.connect(os.environ["DATABASE_URL"],sslmode="require")
+    if db_pool is None:
+        init_pool()
+    conn = db_pool.getconn()
+    conn.autocommit = True
+    return conn
 
-# setting up SQLite database to store user data
+# # setting up PostgreSQL database
 def db_setup():
     connection = get_db()
     cursor = connection.cursor()
@@ -22,9 +37,8 @@ def db_setup():
                 )
                 ''')
 
-    connection.commit()
     cursor.close()
-    connection.close()
+    db_pool.putconn(connection)
 
 # home page
 @app.route('/')
@@ -78,7 +92,7 @@ def list_page(list_name):
 
     rows = cursor.fetchall()  # list of sqlite3.Row objects (not in dict format)
     cursor.close()
-    connection.close()
+    db_pool.putconn(connection)
 
     # converting list of sqlite3.Row objects to list of dicts
     data = [{'title': row[0], 'author': row[1]} for row in rows]
@@ -112,9 +126,9 @@ def add_and_search_item(list_name):
                 (title, author, list_name, request.form.get('user_name'))
             )
 
-            connection.commit()
+    
             cursor.close()
-            connection.close()
+            db_pool.putconn(connection)
 
         return redirect(url_for(list_name, user_name=request.form.get('user_name')))
     
@@ -136,7 +150,7 @@ def add_and_search_item(list_name):
         
         matches = cursor.fetchall()
         cursor.close()
-        connection.close()
+        db_pool.putconn(connection)
 
         if matches:
             return render_template('status.html', user_name=request.form.get('user_name'), key_name=key_name, display_name=display_name, matches=matches, message='Item(s) found in list.', show_delete=True, show_list=False)
@@ -161,8 +175,7 @@ def delete_item(list_name):
     cursor.execute(
         'DELETE FROM storage WHERE TRIM(LOWER(title)) = %s AND TRIM(LOWER(author)) = %s AND list_name = %s AND user_name = %s',
         (title.lower().strip(), author.lower().strip(), list_name, request.form.get('user_name'))
-    )
-    connection.commit()    
+    )    
     
 
     if cursor.rowcount > 0 :
@@ -177,12 +190,13 @@ def delete_item(list_name):
             message=f'"{title}" not found. Try adding it to the list first.'
 
     cursor.close()
-    connection.close()
+    db_pool.putconn(connection)
 
     return render_template('status.html', user_name=request.form.get('user_name'), message=message, display_name=display_name, key_name=key_name, show_list=False, show_delete=False)
 
 
 if __name__ == '__main__':
+    init_pool()
     db_setup()
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port)

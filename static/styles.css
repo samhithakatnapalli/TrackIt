@@ -189,14 +189,14 @@ button{
     font-family: "Special Elite", system-ui;
     font-weight: 600;
     font-size: 1.1rem;
-    color: #1f2937; /* dark text */
+    color: #7a3608; /* dark text */
 }
 
 h3,h1{
     font-family: "Lilita One", sans-serif;
     font-weight: 400;
     font-style: normal;
-    color: #283845;
+    color: #3d5467;
     font-size: 1.3rem;
     text-align: center;
 }

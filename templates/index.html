@@ -4,6 +4,8 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>TBR</title>
+        <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
+        <meta name="theme-color" content="#283845">
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Lilita+One&family=Luckiest+Guy&family=Margarine&family=Outfit:wght@100..900&family=Special+Elite&display=swap" rel="stylesheet">
@@ -14,5 +16,12 @@
             <input type="text" name="user_name" id="enter_name" placeholder="Enter your name..."> 
             <button id="start-button">CLICK TO ENTER</button>
         </form>
+
+        <script>
+            if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/static/sw.js')
+                .then(() => console.log('SW registered'));
+            }
+        </script>
     </body>
 </html>

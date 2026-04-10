@@ -41,13 +41,19 @@
             {% if show_list %}
             <div class="lists">
                 <h1>Your {{ display_name }} List</h1>
-                    {% for book in tbr_books %}
+                    {% for book in sorted_list %}
                         <li class="list-item">
                             <span class="item-text">
-                                {% if book.author %}
-                                <b>{{ book.title }}</b> by {{ book.author }}
-                                {% else %}
                                 <b>{{ book.title }}</b>
+
+                                {% if book.author %}
+                                    by {{ book.author }}
+                                {% endif %}
+                                
+                                {% if book.category %}
+                                    ({{ book.category }})
+                                {% else %}
+                                    (General)
                                 {% endif %}
                             </span>
                         </li>

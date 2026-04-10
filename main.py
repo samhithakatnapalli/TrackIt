@@ -117,7 +117,7 @@ def list_page(list_name):
 
     # sorting by title
     sorted_list = sorted(data, key=lambda x: x['title'])
-    return render_template('status.html', category=category, tbr_books=sorted_list, user_name=request.args.get('user_name'), display_name=display_name, key_name=key_name, show_list=True, show_delete=False)
+    return render_template('status.html', category=category, sorted_list=sorted_list, user_name=request.args.get('user_name'), display_name=display_name, key_name=key_name, show_list=True, show_delete=False)
 
 # taking user input from search box for all lists
 @app.route('/handle-action/<list_name>', methods=['POST'])

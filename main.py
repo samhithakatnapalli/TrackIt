@@ -146,7 +146,7 @@ def add_and_search_item(list_name):
             # check if the exact item already exists
             if category:
                 cursor.execute(
-                    '''SELECT id FROM storage 
+                    '''SELECT id,category FROM storage 
                     WHERE TRIM(LOWER(title)) = %s 
                         AND TRIM(LOWER(author)) = %s 
                         AND list_name = %s 
@@ -168,7 +168,8 @@ def add_and_search_item(list_name):
             exists = cursor.fetchone()
 
             if exists:
-                message = f'"{title}" already exists in {category if category else "General"}.'
+                existing_category = exists[1] or 'General'
+                message = f'"{title}" already exists in {existing_category}.'
             else:
                 cursor.execute(
                     'INSERT INTO storage (title, author, list_name, user_name, category) VALUES (%s, %s, %s, %s, %s)',

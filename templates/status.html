@@ -26,10 +26,12 @@
                             <input type="hidden" name="author" value="{{ item.author }}">
 
                             <span class="item-text">
+                                {{ item.title }}
                                 {% if item.author %}
-                                    {{ item.title }} by {{ item.author }}
-                                {% else %}
-                                    {{ item.title }}
+                                     by {{ item.author }}
+                                {% endif %}
+                                {% if item.category %}
+                                    ({{ item.category }})
                                 {% endif %}
                             </span>
                             <button type="submit" class="delete-x">×</button>

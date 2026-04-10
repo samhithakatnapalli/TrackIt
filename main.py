@@ -157,7 +157,7 @@ def add_and_search_item(list_name):
 
             else:
                 cursor.execute(
-                    '''SELECT id FROM storage 
+                    '''SELECT id,category FROM storage 
                     WHERE TRIM(LOWER(title)) = %s 
                         AND TRIM(LOWER(author)) = %s 
                         AND list_name = %s 

@@ -200,13 +200,13 @@ def add_and_search_item(list_name):
         elif author:
             if category:
                 cursor.execute(
-                    'SELECT title, author, category FROM storage where TRIM(LOWER(title)) = %s AND TRIM(LOWER(author)) = %s AND list_name = %s AND user_name = %s AND LOWER(category)=LOWER(%s)',
-                    (title.lower().strip(), author.lower().strip(), list_name, request.form.get('user_name'), category)
+                    'SELECT title, author, category FROM storage where TRIM(LOWER(author)) = %s AND list_name = %s AND user_name = %s AND LOWER(category)=LOWER(%s)',
+                    (author.lower().strip(), list_name, request.form.get('user_name'), category)
                 )
             else:
                 cursor.execute(
-                    'SELECT title, author, category FROM storage where TRIM(LOWER(title)) = %s AND TRIM(LOWER(author)) = %s AND list_name = %s AND user_name = %s',
-                    (title.lower().strip(), author.lower().strip(), list_name, request.form.get('user_name'))
+                    'SELECT title, author, category FROM storage where TRIM(LOWER(author)) = %s AND list_name = %s AND user_name = %s',
+                    (author.lower().strip(), list_name, request.form.get('user_name'))
                 )
         else:
             if category:

@@ -191,11 +191,17 @@ def add_and_search_item(list_name):
         connection = get_db()
         cursor = connection.cursor()
 
-        if title == '' and category:
-            cursor.execute(
-                'SELECT title, author, category FROM storage WHERE list_name=%s AND user_name=%s AND LOWER(category)=LOWER(%s)',
-                (list_name, request.form.get('user_name'), category)
-            )
+        if title and author:
+            if category:
+                cursor.execute(
+                    'SELECT title, author, category FROM storage WHERE list_name=%s AND user_name=%s AND LOWER(category)=LOWER(%s)',
+                    (title.lower().strip(), author.lower().strip(), list_name, request.form.get('user_name'), category)
+                )
+            else:
+                cursor.execute(
+                    'SELECT title, author, category FROM storage WHERE list_name=%s AND user_name=%s AND TRIM(LOWER(title)) = %s AND TRIM(LOWER(author)) = %s',
+                    (title.lower().strip(), author.lower().strip(),list_name, request.form.get('user_name'))
+                )
 
         elif author:
             if category:
@@ -208,7 +214,7 @@ def add_and_search_item(list_name):
                     'SELECT title, author, category FROM storage where TRIM(LOWER(author)) = %s AND list_name = %s AND user_name = %s',
                     (author.lower().strip(), list_name, request.form.get('user_name'))
                 )
-        else:
+        elif title:
             if category:
                 cursor.execute(
                     'SELECT title, author, category FROM storage where TRIM(LOWER(title)) = %s AND list_name = %s AND user_name = %s AND LOWER(category)=LOWER(%s)',
@@ -219,6 +225,12 @@ def add_and_search_item(list_name):
                     'SELECT title, author, category FROM storage where TRIM(LOWER(title)) = %s AND list_name = %s AND user_name = %s',
                     (title.lower().strip(), list_name, request.form.get('user_name'))
                 )
+
+        elif category:
+            cursor.execute(
+                'SELECT title, author, category FROM storage where list_name = %s AND user_name = %s AND LOWER(category)=LOWER(%s)',
+                (list_name, request.form.get('user_name'), category)
+            )
         
         matches = [{'title': row[0], 'author': row[1], 'category': row[2] } for row in cursor.fetchall()]
         cursor.close()
